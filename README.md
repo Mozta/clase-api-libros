@@ -2,6 +2,12 @@
 
 Una API REST completa para gestionar una colección de libros, desarrollada con Flask y SQLAlchemy.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.7%2B-blue.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)](https://flask.palletsprojects.com/)
+
+📦 **Repositorio**: [github.com/Mozta/clase-api-libros](https://github.com/Mozta/clase-api-libros)
+
 ## 🚀 Características
 
 - ✅ CRUD completo (Create, Read, Update, Delete)
@@ -19,7 +25,13 @@ Una API REST completa para gestionar una colección de libros, desarrollada con 
 
 ## 🛠️ Instalación
 
-1. Clona o descarga el proyecto
+1. Clona el repositorio:
+
+```bash
+git clone git@github.com:Mozta/clase-api-libros.git
+cd clase-api-libros
+```
+
 2. (Opcional) Crea un entorno virtual:
 
 ```bash
@@ -170,9 +182,18 @@ _Todos los campos son opcionales_
 ├── books.yaml          # Especificación OpenAPI
 ├── requirements.txt    # Dependencias del proyecto
 ├── .gitignore          # Archivos a ignorar en Git
+├── LICENSE             # Licencia MIT
 ├── README.md           # Documentación
 └── libros.db           # Base de datos SQLite (se crea automáticamente)
 ```
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
 
 ## 🔧 Desarrollo
 
@@ -186,11 +207,6 @@ _Todos los campos son opcionales_
 ### Validaciones personalizadas
 
 Las validaciones se encuentran en los endpoints de `app.py`. Puedes agregar más validaciones según sea necesario.
-
-## 📧 Contacto
-
-**Desarrollador:** Rafael  
-**Email:** rafael.perez2@iberopuebla.mx
 
 ## 📄 Licencia
 
