@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: API de Gestión de Libros
+  description: API REST para gestionar una colección de libros
+  version: 1.0.0
+
+paths:
+  /libros:
+    get:
+      summary: Lista todos los libros
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer, example: 1 }
+                    titulo: { type: string, example: "El Quijote" }
+                    autor: { type: string, example: "Miguel de Cervantes" }
+                    editorial: { type: string, example: "Francisco de Robles" }
+                    edicion: { type: integer, example: 1605 }

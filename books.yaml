@@ -1,0 +1,371 @@
+openapi: 3.0.3
+info:
+  title: API de Gestión de Libros
+  description: API REST para gestionar una colección de libros
+  version: 1.0.0
+  contact:
+    name: Rafael
+    email: rafael.perez2@iberopuebla.mx
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000
+    description: Servidor de desarrollo local
+
+paths:
+  /:
+    get:
+      summary: Página de bienvenida
+      description: Endpoint de bienvenida que confirma que la API está funcionando
+      operationId: getWelcome
+      tags:
+        - General
+      responses:
+        "200":
+          description: Mensaje de bienvenida exitoso
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Welcome to my API"
+
+  /libros:
+    get:
+      summary: Obtener todos los libros
+      description: Retorna la lista completa de libros disponibles en la colección
+      operationId: getLibros
+      tags:
+        - Libros
+      responses:
+        "200":
+          description: Lista de libros obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Libro"
+              example:
+                - id: 1
+                  titulo: "El Quijote"
+                  autor: "Miguel de Cervantes"
+                  editorial: "Francisco de Robles"
+                  edicion: 1605
+                - id: 2
+                  titulo: "Cien Años de Soledad"
+                  autor: "Gabriel García Márquez"
+                  editorial: "Editorial Sudamericana"
+                  edicion: 1967
+
+    post:
+      summary: Agregar un nuevo libro
+      description: Crea un nuevo libro en la colección
+      operationId: addLibro
+      tags:
+        - Libros
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibroInput"
+            example:
+              titulo: "1984"
+              autor: "George Orwell"
+              editorial: "Secker & Warburg"
+              edicion: 1949
+      responses:
+        "201":
+          description: Libro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Libro"
+              example:
+                id: 4
+                titulo: "1984"
+                autor: "George Orwell"
+                editorial: "Secker & Warburg"
+                edicion: 1949
+        "400":
+          description: Error en la solicitud - datos JSON no proporcionados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                no_json:
+                  summary: JSON no proporcionado
+                  value:
+                    error: "No JSON data provided"
+                missing_field:
+                  summary: Campo requerido faltante
+                  value:
+                    error: "Campo requerido: titulo"
+                invalid_edition:
+                  summary: Edición inválida
+                  value:
+                    error: "El campo 'edicion' debe ser un número entero"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Error al crear el libro"
+
+  /libros/{id}:
+    get:
+      summary: Obtener un libro por ID
+      description: Retorna los detalles de un libro específico usando su ID
+      operationId: getLibro
+      tags:
+        - Libros
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del libro
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        "200":
+          description: Libro encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Libro"
+              example:
+                id: 1
+                titulo: "El Quijote"
+                autor: "Miguel de Cervantes"
+                editorial: "Francisco de Robles"
+                edicion: 1605
+        "404":
+          description: Libro no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "No encontrado"
+
+    put:
+      summary: Actualizar un libro existente
+      description: Actualiza los datos de un libro específico usando su ID
+      operationId: updateLibro
+      tags:
+        - Libros
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del libro a actualizar
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibroUpdate"
+            example:
+              titulo: "Don Quijote de la Mancha"
+              editorial: "Editorial Planeta"
+              edicion: 2020
+      responses:
+        "200":
+          description: Libro actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Libro"
+              example:
+                id: 1
+                titulo: "Don Quijote de la Mancha"
+                autor: "Miguel de Cervantes"
+                editorial: "Editorial Planeta"
+                edicion: 2020
+        "400":
+          description: Error en la solicitud - datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalid_json:
+                  summary: JSON no proporcionado
+                  value:
+                    error: "No JSON data provided"
+                invalid_edition:
+                  summary: Edición inválida
+                  value:
+                    error: "El campo 'edicion' debe ser un número entero"
+        "404":
+          description: Libro no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "No encontrado"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Error al actualizar el libro"
+
+    delete:
+      summary: Eliminar un libro
+      description: Elimina un libro específico de la colección usando su ID
+      operationId: deleteLibro
+      tags:
+        - Libros
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del libro a eliminar
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+      responses:
+        "200":
+          description: Libro eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessMessage"
+              example:
+                message: "Libro eliminado exitosamente"
+        "404":
+          description: Libro no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "No encontrado"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Error al eliminar el libro"
+
+components:
+  schemas:
+    Libro:
+      type: object
+      required:
+        - id
+        - titulo
+        - autor
+        - editorial
+        - edicion
+      properties:
+        id:
+          type: integer
+          description: Identificador único del libro
+          example: 1
+        titulo:
+          type: string
+          description: Título del libro
+          example: "El Quijote"
+        autor:
+          type: string
+          description: Autor del libro
+          example: "Miguel de Cervantes"
+        editorial:
+          type: string
+          description: Editorial que publicó el libro
+          example: "Francisco de Robles"
+        edicion:
+          type: integer
+          description: Año de edición del libro
+          example: 1605
+
+    LibroInput:
+      type: object
+      required:
+        - titulo
+        - autor
+        - editorial
+        - edicion
+      properties:
+        titulo:
+          type: string
+          description: Título del libro
+          example: "1984"
+        autor:
+          type: string
+          description: Autor del libro
+          example: "George Orwell"
+        editorial:
+          type: string
+          description: Editorial que publicó el libro
+          example: "Secker & Warburg"
+        edicion:
+          type: integer
+          description: Año de edición del libro
+          example: 1949
+
+    LibroUpdate:
+      type: object
+      properties:
+        titulo:
+          type: string
+          description: Título del libro
+          example: "Don Quijote de la Mancha"
+        autor:
+          type: string
+          description: Autor del libro
+          example: "Miguel de Cervantes"
+        editorial:
+          type: string
+          description: Editorial que publicó el libro
+          example: "Editorial Planeta"
+        edicion:
+          type: integer
+          description: Año de edición del libro
+          example: 2020
+      description: Esquema para actualizar un libro. Todos los campos son opcionales.
+
+    SuccessMessage:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Mensaje de confirmación de la operación exitosa
+          example: "Libro eliminado exitosamente"
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Mensaje de error descriptivo
+          example: "No encontrado"
+
+tags:
+  - name: General
+    description: Endpoints generales de la API
+  - name: Libros
+    description: Operaciones relacionadas con la gestión de libros
